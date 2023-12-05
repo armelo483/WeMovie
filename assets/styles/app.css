@@ -1,0 +1,157 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+    //background-color: lightgray;
+    padding: 38px 50px;
+    //background: #4B5563;
+    background: repeat left 35% url("../images/avatar.jpg");
+    background-size: auto;
+}
+
+.movie-detail {
+    background: white;
+}
+
+#bestVideoMovie {
+    padding: 0 35px;
+    background: aliceblue;
+}
+#ListeFilm img {
+    width: 134px;
+    height: 154px;
+}
+
+.genre-div {
+    margin-bottom: 38px;
+    padding: 20px;
+    background: whitesmoke;
+}
+
+.font-bold svg {
+    margin-left: 1px;
+    color: #898c11;
+}
+
+#ListeFilm .genre-div {
+    //display: none;
+    animation: slide-up 0.74s ease;
+}
+
+.reverse-animation {
+    animation: slide-down 0.4s ease-in forwards;
+}
+
+.loader_message,  .loader{
+    display: inherit;
+    position: relative;
+}
+
+.loader_message {
+    left: 43%;
+    top: 47%;
+    font-weight: bolder;
+}
+
+.loader {
+    left: 50%;
+    top: 50%;
+    width: 49px;
+    height: 49px;
+    border-radius: 50%;
+    display: inline-block;
+    position: relative;
+    border: 5px solid;
+    border-color: #a89986 #e07171 transparent transparent;
+    box-sizing: border-box;
+    animation: rotation 1s linear infinite;
+}
+.loader::after,
+.loader::before {
+    content: '';
+    box-sizing: border-box;
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    margin: auto;
+    border: 3px solid;
+    border-color: transparent transparent #62372a #FF3D00;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    box-sizing: border-box;
+    animation: rotationBack 0.5s linear infinite;
+    transform-origin: center center;
+}
+.loader::before {
+    width: 32px;
+    height: 32px;
+    border-color: #FFF #d74646 transparent transparent;
+    animation: rotation 1.5s linear infinite;
+}
+
+@keyframes rotation {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}
+@keyframes rotationBack {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(-360deg);
+    }
+}
+.fader {
+    opacity: .9;
+    display: none;
+    background: white;
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 100%;
+    z-index: 99999;
+}
+
+@keyframes rotate {
+    0%   {transform: rotate(0deg)}
+    100%   {transform: rotate(360deg)}
+}
+
+@keyframes prixClipFix {
+    0%   {clip-path:polygon(50% 50%,0 0,0 0,0 0,0 0,0 0)}
+    25%  {clip-path:polygon(50% 50%,0 0,100% 0,100% 0,100% 0,100% 0)}
+    50%  {clip-path:polygon(50% 50%,0 0,100% 0,100% 100%,100% 100%,100% 100%)}
+    75%  {clip-path:polygon(50% 50%,0 0,100% 0,100% 100%,0 100%,0 100%)}
+    100% {clip-path:polygon(50% 50%,0 0,100% 0,100% 100%,0 100%,0 0)}
+}
+
+@keyframes slide-up {
+    0% {
+        opacity: 0;
+        transform: translateY(100px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes slide-down {
+    0% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+    100% {
+        opacity: 0;
+        transform: translateY(100px);
+    }
+}

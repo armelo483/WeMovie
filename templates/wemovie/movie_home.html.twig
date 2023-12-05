@@ -1,0 +1,233 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Bienvenue dans WeMovie{% endblock %}
+
+{% block body %}
+
+    <div class="fader">
+        <p class="loader_message">Patientez que vos films préférés se chargent :)  ...</p>
+        <div class="loader"></div>
+    </div>
+    <div class="main p-8 font-sans mx-64">
+
+        {%  include 'wemovie/chunks/_search-input.html.twig' %}
+        {%  include 'wemovie/chunks/_modal-movie_detail.html.twig' %}
+
+        <!-- -->
+        <div class="min-h-[450px] bg-white my-6 md:break-normal" id="bestVideoMovie" >
+
+            <iframe width="1160" height="600" src="https://www.youtube-nocookie.com/embed/{{ best_movie.youtubevideoid }}?si=VUUNupb2TWlbBP0r&amp;controls=0" title="{{ best_movie.title }}" frameborder="0"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+        </div>
+
+        <div class="flex space-x-8">
+
+            <div class="w-80  flex-none" id="genreFilm">
+                <ul class="h-[calc(100vh-25rem)]  overflow-y-scroll overflow-y-auto  bg-white  scrollbar-thin scrollbar-thumb-blue-700 scrollbar-track-blue-300 overflow-y-scroll scrollbar-thumb-rounded-full scrollbar-track-rounded-full">
+
+                    {{ form_start(genre_form, {'attr': {'novalidate': 'novalidate'}}) }}
+
+                    {% for choice in genre_form.genre %}
+                        <li class="w-full border-b border-gray-200 dark:border-gray-600 py-1">
+                            <div class="flex items-center ps-3">
+                                {{ form_widget(choice, {'attr': {'class': 'genres w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-700 dark:focus:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500'}}) }}
+                                <label for="react-checkbox" class="w-full py-3 ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">{{ form_label(choice) }}</label>
+                            </div>
+                            <div>
+                                {{ form_errors(choice, {'attr': {'class': 'text-red-500'}}) }}
+                            </div>
+                        </li>
+
+                    {% endfor %}
+                    {{ form_end(genre_form) }}
+                </ul>
+            </div>
+
+            <!-- -->
+            <div id="ListeFilm" class="flex-1">
+            </div>
+
+        </div>
+    </div>
+
+
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script type="application/javascript">
+        var genreIdsArray = [];
+        var url = '';
+        var $currentCheckbox = '';
+        var listClassName = 'animated bounce flex flex-row genre-div';
+
+        $(document).ready(function() {
+            url = '/by-genre/28' ;
+
+            //url = '/search/';
+            ajaxCallToDisplayMovies(url, 'action', listClassName);
+
+            $( "#movieSearch" ).autocomplete({
+                source: function( request, response ) {
+                    var searchValue = $('#movieSearch').val().trim(); // this.value
+                    var matchingMovieList = [];
+                    var url='/search/'+searchValue;
+                    console.log(searchValue);
+                    $.ajax({
+                        url: url,
+                        dataType: "json",
+                        success: function( data ) {
+                            console.log(data);
+                            var titresDesFilms = data.map(function(film) {
+                                return film.id+':  '+film.title;
+                                //var wrapper= document.createElement('div');
+                                //return '<p>'+film.title+'</p>';
+                                //wrapper.innerHTML= film.title;
+                            });
+                            response( titresDesFilms );
+                            //response( data );
+                        }
+                    });
+
+                    return searchValue;
+                },
+                minLength: 2,
+                select: function( event, ui ) {
+                    const movie_id = ui.item.value.split(':')[0];
+                    var base_url = window.location.origin;
+                    var url = base_url+'/movie-detail/'+movie_id;
+                    //log( "Selected: " + ui.item.value + " aka " + ui.item.id );
+                    $(location).attr('href',url);
+                    console.log(ui );
+                }
+            } );
+
+            {#
+            $("#movieSearch").on('keypress', function (){
+                var searchValue = $(this).val().trim(); // this.value
+                var matchingMovieList = [];
+                var url='/search/'+searchValue;
+
+               $.ajax({
+                    url: url,
+                    type: 'get'
+                }).done(function(responseData) {
+                      console.log(url);
+                    console.log('Done: ', responseData);
+                }).fail(function() {
+                    console.log('Failed');
+                    console.log(searchValue, url);
+                });
+
+
+
+                $( this ).autocomplete({
+                    source: availableTags
+                });
+            }); #}
+
+            $( ".genres" ).on('change', function(event, json, string) {
+                console.log(event, json, string);
+                var genreId = $(this).attr('data-id');
+                var $currentCheckbox = $(this);
+                var className = $currentCheckbox.siblings('label').find('label').text().toLowerCase();
+
+                url = '/by-genre/' + genreId ;
+
+                if ($currentCheckbox.is(':checked')) {
+                    genreIdsArray.push(genreId);
+                    ajaxCallToDisplayMovies(url, className, listClassName);
+
+                }else {
+                    console.log(className);
+                    genreIdsArray = genreIdsArray.filter(function(item) {
+                        return item !== genreId
+                    });
+                    //$("."+className).addClass('reverse-animation');
+                    var delay = 0;
+
+                    $("."+className).each(function() {
+                        setTimeout(() => {
+                            $(this).addClass('reverse-animation');
+                        }, delay);
+                        delay+=100;
+                    });
+
+                    setTimeout(() => {
+                        $("."+className).remove();
+                    }, delay+1);
+
+                    /*$("."+className).each(function() {
+                        $(this).remove();
+                    });*/
+                }
+
+            });
+
+            function nbSTarToDisplay(nbStar)
+            {
+                var intNbStar = Math.trunc(nbStar);
+                var nbStarToRepeat = intNbStar;
+                var decimal = nbStar-intNbStar;
+                var halfStarString = "<i class='fa-solid fa-star-half'></i>";
+                var starString = "<i class='fa-solid fa-star'></i>";
+                var emptyStarString = "<i class='fa-regular fa-star'></i>";
+                starString = starString.repeat(intNbStar);
+
+                // On ajoute la demi etoile
+                if(decimal.toFixed(1) >=0.5) {
+                    halfStarString = halfStarString.repeat(1);
+                    starString = starString+halfStarString;
+                    console.log(halfStarString);
+                    nbStarToRepeat++;
+                }
+
+                emptyStarString = emptyStarString.repeat(5-nbStarToRepeat);
+
+                return starString+emptyStarString;
+
+            }
+
+            function displayMovies(data, className = '', lisClassName = '') {
+
+                var delay = 0;
+                var timeToDIsplay = 0;
+                $.each(data, function(i, movie) {
+                    setTimeout(() => {
+                        var nbStar = movie.vote_average/2;
+                        var base_url = window.location.origin;
+                        var urlMovieDetail = base_url+'/movie-detail/'+movie.id;
+                        $('#ListeFilm').append("<a href="+urlMovieDetail+" ><div class='"+className+"'><div class='"+lisClassName+"'><div class='basis-1/4'>"+
+                            "<img src={{ image_base_path }}"+movie.poster_path +"></div><div class ='basis-3/4 grid grid-cols-1 gap-1'><h1 class='font-bold'><u style='margin-right: 10px'>"
+                            +movie.title.toUpperCase()+
+                            "</u>"+ nbSTarToDisplay(nbStar) +
+                            "</h1>" +
+                            "<div>"+movie.over_view
+                            +"</div></div></div></div></a>");
+                    }, delay);
+
+                    delay+=400;
+                });
+
+                setTimeout(() => {$(".fader").fadeOut();}, delay+1);
+
+            }
+
+            function ajaxCallToDisplayMovies(url, className, lisClassName) {
+
+                $.ajax({
+                    url: url,
+                    method: 'GET',
+                    beforeSend: function() {
+                        $(".fader").show();
+                    },
+                    success: function(data) {
+                        displayMovies(data, className, lisClassName);
+                    },
+                    error: function(error) {
+                    }
+                });
+            }
+        });
+    </script>
+{% endblock %}

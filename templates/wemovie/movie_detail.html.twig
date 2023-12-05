@@ -1,0 +1,27 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Détail du film {{ movie.title }}{% endblock %}
+
+{% block body %}
+    <div class="main p-8 font-sans mx-64">
+{# {%  include 'wemovie/chunks/_search-input.html.twig' %} #}
+        <div class='movie-detail my-6 px-5 py-3'>
+            <h1 class="text-xl font-bold"><u>Titre: </u> {{ movie.title }}</h1>
+            <div class="flex my-3">
+                <div class="flex-initial mx-6">
+                    <img src="{{ image_base_path~'/'~  movie.posterPath  }}" />
+                </div>
+            </div>
+
+            <div class="my-3">
+                <h1 class="text-xl font-bold"><u>Description</u> </h1>
+            </div>
+
+            <div class="my-3">
+                {{ movie.overView }}
+            </div>
+
+
+        </div>
+    </div>
+{% endblock %}

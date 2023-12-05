@@ -1,6 +1,9 @@
 twig:
     default_path: '%kernel.project_dir%/templates'
+    globals:
+        image_base_path: 'https://image.tmdb.org/t/p/w300'
 
 when@test:
     twig:
         strict_variables: true
+        form_themes: ['tailwind_2_layout.html.twig']

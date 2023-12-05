@@ -6,6 +6,9 @@
 parameters:
 
 services:
+    App\EventListener\ProductionCountriesListener:
+        tags:
+            - { name: doctrine.event_listener, event: postLoad }
     # default configuration for services in *this* file
     _defaults:
         autowire: true      # Automatically injects dependencies in your services.
@@ -18,6 +21,7 @@ services:
         exclude:
             - '../src/DependencyInjection/'
             - '../src/Entity/'
+            - '../src/ValueObject/'
             - '../src/Kernel.php'
 
     # add more service definitions when explicit configuration is needed

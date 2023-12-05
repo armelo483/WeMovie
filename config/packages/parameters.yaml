@@ -1,0 +1,4 @@
+# config/packages/parameters.yaml
+parameters:
+  api_key: '%env(API_KEY)%'
+  api_read_access_token: '%env(API_READ_ACCESS_TOKEN)%'
