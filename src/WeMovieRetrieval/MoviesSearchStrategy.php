@@ -31,8 +31,8 @@ class MoviesSearchStrategy extends WeMovieRetrieval implements WeMovieStrategyIn
         $options = $this->resolver->resolve($options);
         $genreJsonArr = parent::getArrayFromJson(self::RELATIVE_URL.$options[self::SEARCH_PARAM]);
 
-        // On enleve les valeurs de date "" pour eviter de faire "peter" le dateTimeDeNormalizer
-        // Qui n aime pas les valeurs null ou ""
+        // On enleve ici les valeurs de date "" pour eviter de faire "peter" le dateTimeDeNormalizer
+        // Qui n aime pas les valeurs null ou "" car dans le custom Denormalizer ca marche pas :(
         array_walk($genreJsonArr['results'], function(&$value){
             $releasedDate = trim($value['release_date']);
             if(empty($releasedDate)) {

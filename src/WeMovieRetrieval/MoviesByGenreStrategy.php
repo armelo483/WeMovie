@@ -28,7 +28,7 @@ class MoviesByGenreStrategy extends WeMovieRetrieval implements WeMovieStrategyI
         $options = $this->resolver->resolve($options);
         $genreJsonArr = parent::getArrayFromJson(self::RELATIVE_URL.$options[self::SEARCH_PARAM]);
 
-        return  $this->serializer->deserialize(json_encode($genreJsonArr['results']),  Movie::class.'[]', 'json');
+        return  $this->serializer->deserialize(json_encode($genreJsonArr['results']),  Movie::class.'[]', WeMovieRetrieval::JSON_FORMAT);
 
     }
 

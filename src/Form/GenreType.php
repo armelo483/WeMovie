@@ -14,8 +14,6 @@ class GenreType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
-        $defaultGenre = reset($options['data']);
-
         $builder
             ->add('genre', ChoiceType::class, [
                 'choices' => $options['data'],
@@ -31,13 +29,11 @@ class GenreType extends AbstractType
                     }
 
                     return $attrs;
-                    //return ['data-id' => $genre?->getId()];
                 },
                 'required' => false,
                 'expanded' => true,
                 'multiple' => true,
             ]);
-        //dd(reset($options['data']));
     }
 
 }

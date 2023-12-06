@@ -20,10 +20,7 @@ class AjaxMoviesSearchController extends WeMovieBaseController
         $moviesSearchStrategy = MoviesSearchStrategy::getInstance($this->weMovieApiClient, $this->serializer);
         $this->weMovieApi->setWeMovieRetrievalStrategy($moviesSearchStrategy);
         $movies = $this->weMovieApi->get($options);
-        //dd($movies);
-        //dd($searchValue);
 
-        // A refactorer car le meme code se repete
         if($request->isXmlHttpRequest()) {
 
             $searchValue = $request->get('search_value');
