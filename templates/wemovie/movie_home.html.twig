@@ -80,12 +80,8 @@
                             console.log(data);
                             var titresDesFilms = data.map(function(film) {
                                 return film.id+':  '+film.title;
-                                //var wrapper= document.createElement('div');
-                                //return '<p>'+film.title+'</p>';
-                                //wrapper.innerHTML= film.title;
                             });
                             response( titresDesFilms );
-                            //response( data );
                         }
                     });
 
@@ -96,35 +92,10 @@
                     const movie_id = ui.item.value.split(':')[0];
                     var base_url = window.location.origin;
                     var url = base_url+'/movie-detail/'+movie_id;
-                    //log( "Selected: " + ui.item.value + " aka " + ui.item.id );
                     $(location).attr('href',url);
                     console.log(ui );
                 }
             } );
-
-            {#
-            $("#movieSearch").on('keypress', function (){
-                var searchValue = $(this).val().trim(); // this.value
-                var matchingMovieList = [];
-                var url='/search/'+searchValue;
-
-               $.ajax({
-                    url: url,
-                    type: 'get'
-                }).done(function(responseData) {
-                      console.log(url);
-                    console.log('Done: ', responseData);
-                }).fail(function() {
-                    console.log('Failed');
-                    console.log(searchValue, url);
-                });
-
-
-
-                $( this ).autocomplete({
-                    source: availableTags
-                });
-            }); #}
 
             $( ".genres" ).on('change', function(event, json, string) {
                 console.log(event, json, string);
@@ -157,9 +128,6 @@
                         $("."+className).remove();
                     }, delay+1);
 
-                    /*$("."+className).each(function() {
-                        $(this).remove();
-                    });*/
                 }
 
             });
@@ -172,13 +140,14 @@
                 var halfStarString = "<i class='fa-solid fa-star-half'></i>";
                 var starString = "<i class='fa-solid fa-star'></i>";
                 var emptyStarString = "<i class='fa-regular fa-star'></i>";
+                var emptyStarStringOverLapped = "<i class='fa-regular fa-star over-lapped'  style='position: relative;right: 19px;'></i>";
                 starString = starString.repeat(intNbStar);
 
                 // On ajoute la demi etoile
                 if(decimal.toFixed(1) >=0.5) {
                     halfStarString = halfStarString.repeat(1);
                     starString = starString+halfStarString;
-                    console.log(halfStarString);
+                    starString += emptyStarStringOverLapped; // On superpose la demi etoile sur la vide
                     nbStarToRepeat++;
                 }
 
@@ -205,11 +174,15 @@
                             "<div>"+movie.over_view
                             +"</div></div></div></div></a>");
                     }, delay);
-
                     delay+=400;
                 });
 
-                setTimeout(() => {$(".fader").fadeOut();}, delay+1);
+
+                setTimeout(() => {
+                    $('.over-lapped').attr('viewBox', "0 0 51 512"); // On positionne bien les etoiles superposées
+                     $(".fader").fadeOut();
+                     },
+                delay+2);
 
             }
 
