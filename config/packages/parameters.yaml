@@ -2,3 +2,5 @@
 parameters:
   api_key: '%env(API_KEY)%'
   api_read_access_token: '%env(API_READ_ACCESS_TOKEN)%'
+  cache_item_expiration_time: '%env(TIME_CACHE_EXPIRATION)%'
+
